@@ -40,7 +40,7 @@
 
         // ข้อมูลดอกไม้
         var flowers = [
-            { name: 'บุหรง', location: [13.689345, 100.662049], image: 'Web/1.บุหรง.jpg' },
+            { name: 'บุหรง', location: [13.689345, 100.662049], image: 'Web/1.บุรง.jpg' },
             { name: 'ผีพวนน้อย', location: [13.689572, 100.662406], image: 'Web/2.ผีพวนน้อย.jpg' },
             { name: 'ขิงมุกดา', location: [13.689741, 100.662901], image: 'Web/3.ขิงมุกดา.jpg' },
             { name: 'ทองหลางแดง', location: [13.689227, 100.662440], image: 'Web/4.ทองหลางแดง.jpg' }
@@ -80,13 +80,10 @@
         map.on('locationfound', onLocationFound);
         map.on('locationerror', onLocationError);
 
-        // อัพเดตตำแหน่งปัจจุบันทุก 10 วินาที
-        map.locate({ setView: true, maxZoom: 16, watch: true, enableHighAccuracy: true });
-
-        // อัพเดตตำแหน่งปัจจุบันทุก 10 วินาที
+        // อัพเดตตำแหน่งปัจจุบันทุก 5 นาที
         setInterval(function() {
             map.locate({ setView: false, maxZoom: 16, watch: true, enableHighAccuracy: true });
-        }, 10000);
+        }, 300000); // 5 นาที = 300,000 มิลลิวินาที
     </script>
 </body>
 </html>
