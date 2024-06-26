@@ -31,7 +31,7 @@
 
         // สร้างไอคอนสำหรับตำแหน่งผู้ใช้
         var userIcon = new L.Icon({
-            iconUrl: 'https://unpkg.com/leaflet@1.7.1/dist/images/marker-icon-red.png',
+            iconUrl: 'https://cdn.iconscout.com/icon/free/png-256/free-pin-1768009-1502183.png',
             iconSize: [25, 41], // ขนาดไอคอน
             iconAnchor: [12, 41],
             popupAnchor: [1, -34],
@@ -40,10 +40,10 @@
 
         // ข้อมูลดอกไม้
         var flowers = [
-            { name: 'บุหรง', location: [13.689345, 100.662049], image: 'Web/1.บุรง.jpg' },
-            { name: 'ผีพวนน้อย', location: [13.689572, 100.662406], image: 'Web/2.ผีพวนน้อย.jpg' },
-            { name: 'ขิงมุกดา', location: [13.689741, 100.662901], image: 'Web/3.ขิงมุกดา.jpg' },
-            { name: 'ทองหลางแดง', location: [13.689227, 100.662440], image: 'Web/4.ทองหลางแดง.jpg' }
+            { name: 'บุหรง', location: [13.689345, 100.662049], image: 'https://drive.google.com/uc?id=1A3UxkY8U7wXjOvkmI16lDm0vLMXdf98X' },
+            { name: 'ผีพวนน้อย', location: [13.689572, 100.662406], image: 'https://drive.google.com/uc?id=1yS4Ud1Z0p_AiPQoqgTCH5oFtEm3yRmXH' },
+            { name: 'ขิงมุกดา', location: [13.689741, 100.662901], image: 'https://drive.google.com/uc?id=1yO0OYAdtHTVtO89o6rkFJG-TUeS9V5M_' },
+            { name: 'ทองหลางแดง', location: [13.689227, 100.662440], image: 'https://drive.google.com/uc?id=1Vz5y1lR8GnRiBt1ZlCO1-1p9Fi1zCtXw' }
         ];
 
         // เพิ่มหมุดและป๊อปอัพพร้อมภาพสำหรับแต่ละดอกไม้
@@ -80,10 +80,7 @@
         map.on('locationfound', onLocationFound);
         map.on('locationerror', onLocationError);
 
-        // อัพเดตตำแหน่งปัจจุบันทุก 5 นาที
-        setInterval(function() {
-            map.locate({ setView: false, maxZoom: 16, watch: true, enableHighAccuracy: true });
-        }, 300000); // 5 นาที = 300,000 มิลลิวินาที
+        // ไม่มีการอัพเดตตำแหน่งปัจจุบันทุก 5 นาที
     </script>
 </body>
 </html>
