@@ -7,11 +7,24 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
     <style>
         body, html { height: 100%; margin: 0; }
-        #map { height: 100%; }
+        #map { height: 80%; }
+        #formContainer { padding: 20px; background-color: #f9f9f9; }
+        input, textarea { width: 100%; padding: 10px; margin: 5px 0; }
+        button { padding: 10px; background-color: #4CAF50; color: white; border: none; cursor: pointer; }
+        button:hover { background-color: #45a049; }
     </style>
 </head>
 <body>
     <div id="map"></div>
+    <div id="formContainer">
+        <h2>Add New Flower Location</h2>
+        <input type="text" id="flowerName" placeholder="Flower Name" required />
+        <input type="text" id="flowerLat" placeholder="Latitude" required />
+        <input type="text" id="flowerLng" placeholder="Longitude" required />
+        <textarea id="flowerInfo" placeholder="Information about the flower" required></textarea>
+        <input type="file" id="flowerImage" accept="image/*" required />
+        <button onclick="addNewLocation()">Add Location</button>
+    </div>
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
     <script>
         var map = L.map('map').setView([13.685957, 100.663490], 15); // ตำแหน่งสวนหลวง ร.9, ซูมเอ้า
@@ -40,18 +53,16 @@
 
         // ข้อมูลดอกไม้
         var flowers = [
-            { name: 'บุหรง', location: [13.689345, 100.662049], image: 'https://raw.githubusercontent.com/Pihcet/SL-MAP/main/1.%E0%B8%9A%E0%B8%B8%E0%B8%AB%E0%B8%A3%E0%B8%87.JPG' },
-            { name: 'ผีพวนน้อย', location: [13.689572, 100.662406], image: 'https://raw.githubusercontent.com/Pihcet/SL-MAP/main/2.%E0%B8%9C%E0%B8%B5%E0%B8%9E%E0%B8%A7%E0%B8%99%E0%B8%99%E0%B9%89%E0%B8%AD%E0%B8%A2.JPG' },
-            { name: 'ขิงมุกดา', location: [13.689741, 100.662901], image: 'https://raw.githubusercontent.com/Pihcet/SL-MAP/main/3.%E0%B8%82%E0%B8%B4%E0%B8%87%E0%B8%A1%E0%B8%B8%E0%B8%81%E0%B8%94%E0%B8%B2.JPG' },
-            { name: 'ทองหลางแดง', location: [13.689227, 100.662440], image: 'https://raw.githubusercontent.com/Pihcet/SL-MAP/main/4.%E0%B8%97%E0%B8%AD%E0%B8%87%E0%B8%AB%E0%B8%A5%E0%B8%B2%E0%B8%87%E0%B9%81%E0%B8%94%E0%B8%87.JPG' }
+            { name: 'บุหรง', location: [13.689345, 100.662049], image: 'https://raw.githubusercontent.com/Pihcet/SL-MAP/main/1.%E0%B8%9A%E0%B8%B8%E0%B8%AB%E0%B8%A3%E0%B8%87.JPG', info: 'ดอกไม้สวยงามจากสวนหลวง' },
+            { name: 'ผีพวนน้อย', location: [13.689572, 100.662406], image: 'https://raw.githubusercontent.com/Pihcet/SL-MAP/main/2.%E0%B8%9C%E0%B8%B5%E0%B8%9E%E0%B8%A7%E0%B8%99%E0%B8%99%E0%B9%89%E0%B8%AD%E0%B8%A2.JPG', info: 'ดอกไม้สวยงามจากสวนหลวง' },
+            { name: 'ขิงมุกดา', location: [13.689741, 100.662901], image: 'https://raw.githubusercontent.com/Pihcet/SL-MAP/main/3.%E0%B8%82%E0%B8%B4%E0%B8%87%E0%B8%A1%E0%B8%B8%E0%B8%81%E0%B8%94%E0%B8%B2.JPG', info: 'ดอกไม้สวยงามจากสวนหลวง' },
+            { name: 'ทองหลางแดง', location: [13.689227, 100.662440], image: 'https://raw.githubusercontent.com/Pihcet/SL-MAP/main/4.%E0%B8%97%E0%B8%AD%E0%B8%87%E0%B8%AB%E0%B8%A5%E0%B8%B2%E0%B8%87%E0%B9%81%E0%B8%94%E0%B8%87.JPG', info: 'ดอกไม้สวยงามจากสวนหลวง' }
         ];
 
-        // เพิ่มหมุดและป๊อปอัพพร้อมภาพสำหรับแต่ละดอกไม้
+        // เพิ่มหมุดและป๊อปอัพพร้อมภาพและข้อมูลสำหรับแต่ละดอกไม้
         flowers.forEach(function(flower) {
             var marker = L.marker(flower.location, { icon: smallIcon }).addTo(map);
-            
-            var popupContent = '<b>' + flower.name + '</b><br><img src="' + flower.image + '" alt="' + flower.name + '" style="width:200px;height:auto;">';
-            
+            var popupContent = '<b>' + flower.name + '</b><br><img src="' + flower.image + '" alt="' + flower.name + '" style="width:200px;height:auto;"><br>' + flower.info;
             marker.bindPopup(popupContent);
         });
 
@@ -77,6 +88,35 @@
 
         // ค้นหาตำแหน่งปัจจุบันเพียงครั้งเดียว
         map.locate({ setView: true, maxZoom: 16 });
+
+        // ฟังก์ชันเพิ่มตำแหน่งใหม่
+        function addNewLocation() {
+            var name = document.getElementById('flowerName').value;
+            var lat = parseFloat(document.getElementById('flowerLat').value);
+            var lng = parseFloat(document.getElementById('flowerLng').value);
+            var info = document.getElementById('flowerInfo').value;
+            var imageFile = document.getElementById('flowerImage').files[0];
+
+            if (name && !isNaN(lat) && !isNaN(lng) && info && imageFile) {
+                var reader = new FileReader();
+                reader.onload = function(e) {
+                    var newFlower = {
+                        name: name,
+                        location: [lat, lng],
+                        image: e.target.result,
+                        info: info
+                    };
+                    flowers.push(newFlower);
+
+                    var marker = L.marker(newFlower.location, { icon: smallIcon }).addTo(map);
+                    var popupContent = '<b>' + newFlower.name + '</b><br><img src="' + newFlower.image + '" alt="' + newFlower.name + '" style="width:200px;height:auto;"><br>' + newFlower.info;
+                    marker.bindPopup(popupContent);
+                };
+                reader.readAsDataURL(imageFile);
+            } else {
+                alert('Please fill in all fields and select an image.');
+            }
+        }
     </script>
 </body>
 </html>
