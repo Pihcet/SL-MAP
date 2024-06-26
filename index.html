@@ -1,9 +1,10 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Suan Luang Rama IX Park Flower Tour - Google Maps</title>
+    <title>Suan Luang Rama IX Park Flower Tour</title>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
     <style>
         body, html { height: 100%; margin: 0; }
         #map { height: 100%; }
@@ -11,85 +12,71 @@
 </head>
 <body>
     <div id="map"></div>
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
     <script>
-        function initMap() {
-            var parkLocation = { lat: 13.685957, lng: 100.663490 };
-            var map = new google.maps.Map(document.getElementById('map'), {
-                zoom: 15,
-                center: parkLocation
-            });
+        var map = L.map('map').setView([13.685957, 100.663490], 15); // ตำแหน่งสวนหลวง ร.9, ซูมเอ้า
 
-            var flowers = [
-                { name: 'บุหรง', location: { lat: 13.689345, lng: 100.662049 }, image: 'https://raw.githubusercontent.com/Pihcet/SL-MAP/main/1.%E0%B8%9A%E0%B8%B8%E0%B8%AB%E0%B8%A3%E0%B8%87.JPG' },
-                { name: 'ผีพวนน้อย', location: { lat: 13.689572, lng: 100.662406 }, image: 'https://raw.githubusercontent.com/Pihcet/SL-MAP/main/2.%E0%B8%9C%E0%B8%B5%E0%B8%9E%E0%B8%A7%E0%B8%99%E0%B9%89%E0%B8%AD%E0%B8%A2.JPG' },
-                { name: 'ขิงมุกดา', location: { lat: 13.689741, lng: 100.662901 }, image: 'https://raw.githubusercontent.com/Pihcet/SL-MAP/main/3.%E0%B8%82%E0%B8%B4%E0%B8%87%E0%B8%A1%E0%B8%B8%E0%B8%81%E0%B8%94%E0%B8%B2.JPG' },
-                { name: 'ทองหลางแดง', location: { lat: 13.689227, lng: 100.662440 }, image: 'https://raw.githubusercontent.com/Pihcet/SL-MAP/main/4.%E0%B8%97%E0%B8%AD%E0%B8%87%E0%B8%AB%E0%B8%A5%E0%B8%B2%E0%B8%87%E0%B9%81%E0%B8%94%E0%B8%87.JPG' }
-            ];
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        }).addTo(map);
 
-            flowers.forEach(function(flower) {
-                var marker = new google.maps.Marker({
-                    position: flower.location,
-                    map: map,
-                    title: flower.name
-                });
+        // สร้างไอคอนขนาดเล็กสำหรับหมุดดอกไม้
+        var smallIcon = new L.Icon({
+            iconUrl: 'https://static.vecteezy.com/system/resources/previews/009/393/757/original/push-pin-icon-sign-symbol-design-free-png.png',
+            iconSize: [25, 41], // ขนาดไอคอนขนาดเล็ก
+            iconAnchor: [12, 41],
+            popupAnchor: [1, -34],
+            shadowSize: [41, 41]
+        });
 
-                var infowindow = new google.maps.InfoWindow({
-                    content: '<b>' + flower.name + '</b><br><img src="' + flower.image + '" alt="' + flower.name + '" style="width:200px;height:auto;">'
-                });
+        // สร้างไอคอนสำหรับตำแหน่งผู้ใช้
+        var userIcon = new L.Icon({
+            iconUrl: 'https://www.freeiconspng.com/thumbs/human-icon-png/download-link-for-eps--svg-or-file--0.png',
+            iconSize: [25, 41], // ขนาดไอคอน
+            iconAnchor: [12, 41],
+            popupAnchor: [1, -34],
+            shadowSize: [41, 41]
+        });
 
-                marker.addListener('click', function() {
-                    infowindow.open(map, marker);
-                });
-            });
+        // ข้อมูลดอกไม้
+        var flowers = [
+            { name: 'บุหรง', location: [13.689345, 100.662049], image: 'https://raw.githubusercontent.com/Pihcet/SL-MAP/main/1.%E0%B8%9A%E0%B8%B8%E0%B8%AB%E0%B8%A3%E0%B8%87.JPG' },
+            { name: 'ผีพวนน้อย', location: [13.689572, 100.662406], image: 'https://raw.githubusercontent.com/Pihcet/SL-MAP/main/2.%E0%B8%9C%E0%B8%B5%E0%B8%9E%E0%B8%A7%E0%B8%99%E0%B8%99%E0%B9%89%E0%B8%AD%E0%B8%A2.JPG' },
+            { name: 'ขิงมุกดา', location: [13.689741, 100.662901], image: 'https://raw.githubusercontent.com/Pihcet/SL-MAP/main/3.%E0%B8%82%E0%B8%B4%E0%B8%87%E0%B8%A1%E0%B8%B8%E0%B8%81%E0%B8%94%E0%B8%B2.JPG' },
+            { name: 'ทองหลางแดง', location: [13.689227, 100.662440], image: 'https://raw.githubusercontent.com/Pihcet/SL-MAP/main/4.%E0%B8%97%E0%B8%AD%E0%B8%87%E0%B8%AB%E0%B8%A5%E0%B8%B2%E0%B8%87%E0%B9%81%E0%B8%94%E0%B8%87.JPG' }
+        ];
 
-            // ตำแหน่งผู้ใช้
-            if (navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition(function(position) {
-                    var pos = {
-                        lat: position.coords.latitude,
-                        lng: position.coords.longitude
-                    };
+        // เพิ่มหมุดและป๊อปอัพพร้อมภาพสำหรับแต่ละดอกไม้
+        flowers.forEach(function(flower) {
+            var marker = L.marker(flower.location, { icon: smallIcon }).addTo(map);
+            
+            var popupContent = '<b>' + flower.name + '</b><br><img src="' + flower.image + '" alt="' + flower.name + '" style="width:200px;height:auto;">';
+            
+            marker.bindPopup(popupContent);
+        });
 
-                    var userMarker = new google.maps.Marker({
-                        position: pos,
-                        map: map,
-                        title: "You are here",
-                        icon: 'https://www.freeiconspng.com/thumbs/human-icon-png/download-link-for-eps--svg-or-file--0.png'
-                    });
+        var userMarker;
+        var userCircle;
 
-                    var userCircle = new google.maps.Circle({
-                        strokeColor: '#007BFF',
-                        strokeOpacity: 0.8,
-                        strokeWeight: 2,
-                        fillColor: '#007BFF',
-                        fillOpacity: 0.35,
-                        map: map,
-                        center: pos,
-                        radius: position.coords.accuracy / 2
-                    });
+        // ฟังก์ชันสำหรับค้นหาตำแหน่งปัจจุบันเพียงครั้งเดียว
+        function onLocationFound(e) {
+            var radius = e.accuracy / 2;
 
-                    map.setCenter(pos);
-                }, function() {
-                    handleLocationError(true, map.getCenter());
-                });
-            } else {
-                handleLocationError(false, map.getCenter());
-            }
+            userMarker = L.marker(e.latlng, { icon: userIcon }).addTo(map)
+                .bindPopup("You are here within " + radius + " meters").openPopup();
+
+            userCircle = L.circle(e.latlng, radius).addTo(map);
         }
 
-        function handleLocationError(browserHasGeolocation, pos) {
-            var infoWindow = new google.maps.InfoWindow({
-                map: map
-            });
-            infoWindow.setPosition(pos);
-            infoWindow.setContent(browserHasGeolocation ?
-                                  'Error: The Geolocation service failed.' :
-                                  'Error: Your browser doesn\'t support geolocation.');
-            infoWindow.open(map);
+        function onLocationError(e) {
+            alert(e.message);
         }
-    </script>
-    <script async defer
-    src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&callback=initMap">
+
+        map.on('locationfound', onLocationFound);
+        map.on('locationerror', onLocationError);
+
+        // ค้นหาตำแหน่งปัจจุบันเพียงครั้งเดียว
+        map.locate({ setView: true, maxZoom: 16 });
     </script>
 </body>
 </html>
