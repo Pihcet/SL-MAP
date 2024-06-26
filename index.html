@@ -48,8 +48,11 @@
 
         // เพิ่มหมุดและป๊อปอัพพร้อมภาพสำหรับแต่ละดอกไม้
         flowers.forEach(function(flower) {
-            L.marker(flower.location, { icon: smallIcon }).addTo(map)
-                .bindPopup('<b>' + flower.name + '</b><br><img src="' + flower.image + '" alt="' + flower.name + '" style="width:200px;height:auto;">');
+            var marker = L.marker(flower.location, { icon: smallIcon }).addTo(map);
+            
+            var popupContent = '<b>' + flower.name + '</b><br><img src="' + flower.image + '" alt="' + flower.name + '" style="width:200px;height:auto;">';
+            
+            marker.bindPopup(popupContent);
         });
 
         var userMarker;
