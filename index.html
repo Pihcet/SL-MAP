@@ -77,10 +77,13 @@
         map.on('locationfound', onLocationFound);
         map.on('locationerror', onLocationError);
 
-        // อัพเดตตำแหน่งปัจจุบันทุก 5 วินาที
+        // อัพเดตตำแหน่งปัจจุบันทุก 10 วินาที
+        map.locate({ setView: true, maxZoom: 16, watch: true, enableHighAccuracy: true });
+
+        // อัพเดตตำแหน่งปัจจุบันทุก 10 วินาที
         setInterval(function() {
-            map.locate({ setView: true, maxZoom: 16 });
-        }, 5000);
+            map.locate({ setView: false, maxZoom: 16, watch: true, enableHighAccuracy: true });
+        }, 10000);
     </script>
 </body>
 </html>
