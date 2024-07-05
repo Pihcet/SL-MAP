@@ -21,38 +21,54 @@
             attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         }).addTo(map);
 
-        var smallIcon = new L.Icon({
-            iconUrl: 'https://static.vecteezy.com/system/resources/previews/009/393/757/original/push-pin-icon-sign-symbol-design-free-png.png',
-            iconSize: [25, 41],
-            iconAnchor: [12, 41],
-            popupAnchor: [1, -34],
-            shadowSize: [41, 41]
-        });
+        var iconUrls = [
+            'https://upload.wikimedia.org/wikipedia/commons/1/11/Blue_marker.png',
+            'https://upload.wikimedia.org/wikipedia/commons/8/88/Red_marker.png',
+            'https://upload.wikimedia.org/wikipedia/commons/0/0e/Yellow_marker.png',
+            'https://upload.wikimedia.org/wikipedia/commons/5/5f/Green_marker.png',
+            'https://upload.wikimedia.org/wikipedia/commons/f/f7/Purple_marker.png',
+            'https://upload.wikimedia.org/wikipedia/commons/b/bf/Orange_marker.png',
+            'https://upload.wikimedia.org/wikipedia/commons/9/99/Cyan_marker.png',
+            'https://upload.wikimedia.org/wikipedia/commons/1/1e/Pink_marker.png',
+            'https://upload.wikimedia.org/wikipedia/commons/2/2a/Lime_marker.png',
+            'https://upload.wikimedia.org/wikipedia/commons/d/d1/Magenta_marker.png',
+            'https://upload.wikimedia.org/wikipedia/commons/3/3d/Brown_marker.png'
+        ];
+
+        function createIcon(iconUrl) {
+            return new L.Icon({
+                iconUrl: iconUrl,
+                iconSize: [30, 40],
+                iconAnchor: [15, 40],
+                popupAnchor: [0, -40],
+                shadowSize: [40, 40]
+            });
+        }
 
         var userIcon = new L.Icon({
-            iconUrl: 'https://www.freeiconspng.com/thumbs/human-icon-png/download-link-for-eps--svg-or-file--0.png',
-            iconSize: [25, 41],
-            iconAnchor: [12, 41],
-            popupAnchor: [1, -34],
-            shadowSize: [41, 41]
+            iconUrl: 'https://upload.wikimedia.org/wikipedia/commons/5/50/Red_Pushpin.png',
+            iconSize: [30, 40],
+            iconAnchor: [15, 40],
+            popupAnchor: [0, -40],
+            shadowSize: [40, 40]
         });
 
         var flowers = [
-            { name: 'กันภัยมหิดล', location: [13.690556, 100.660551], image: 'https://raw.githubusercontent.com/Pihcet/SL-MAP/main/%E0%B8%81%E0%B8%B1%E0%B8%99%E0%B8%A0%E0%B8%B1%E0%B8%A2%E0%B8%A1%E0%B8%AB%E0%B8%B4%E0%B8%94%E0%B8%A5.JPG' },
-            { name: 'ขิงเจ้าเมืองเชียงใหม่', location: [13.689726, 100.662912], image: 'https://raw.githubusercontent.com/Pihcet/SL-MAP/main/%E0%B8%82%E0%B8%B4%E0%B8%87%E0%B9%80%E0%B8%88%E0%B9%89%E0%B8%B2%E0%B9%80%E0%B8%A1%E0%B8%B7%E0%B8%AD%E0%B8%87%E0%B9%80%E0%B8%8A%E0%B8%B5%E0%B8%A2%E0%B8%87%E0%B9%83%E0%B8%AB%E0%B8%A1%E0%B9%88.JPG' },
-            { name: 'ถั่วแปปช้าง', location: [13.690463, 100.660682], image: 'https://github.com/Pihcet/SL-MAP/blob/main/%E0%B8%96%E0%B8%B1%E0%B9%88%E0%B8%A7%E0%B9%81%E0%B8%9B%E0%B8%9B%E0%B8%8A%E0%B9%89%E0%B8%B2%E0%B8%87.JPG?raw=true' },
-            { name: 'บุหรง', location: [13.689321, 100.662220], image: 'https://raw.githubusercontent.com/Pihcet/SL-MAP/main/%E0%B8%9A%E0%B8%B8%E0%B8%AB%E0%B8%A3%E0%B8%87.JPG' },
-            { name: 'ปอพราน', location: [13.688729, 100.659787], image: 'https://raw.githubusercontent.com/Pihcet/SL-MAP/main/%E0%B8%9B%E0%B8%AD%E0%B8%9E%E0%B8%A3%E0%B8%B2%E0%B8%99.JPG' },
-            { name: 'ผีพวนน้อย', location: [13.689570, 100.662376], image: 'https://raw.githubusercontent.com/Pihcet/SL-MAP/main/%E0%B8%9C%E0%B8%B5%E0%B8%9E%E0%B8%A7%E0%B8%99%E0%B8%99%E0%B9%89%E0%B8%AD%E0%B8%A2.JPG' },
-            { name: 'พลับเขา', location: [13.688180, 100.660626], image: 'https://raw.githubusercontent.com/Pihcet/SL-MAP/main/%E0%B8%9E%E0%B8%A5%E0%B8%B1%E0%B8%9A%E0%B9%80%E0%B8%82%E0%B8%B2.JPG' },
-            { name: 'พะยอม', location: [13.681492, 100.661494], image: 'https://raw.githubusercontent.com/Pihcet/SL-MAP/main/%E0%B8%9E%E0%B8%B0%E0%B8%A2%E0%B8%AD%E0%B8%A1.JPG' },
-            { name: 'มะเกลือกา', location: [13.688403, 100.660265], image: 'https://raw.githubusercontent.com/Pihcet/SL-MAP/main/%E0%B8%A1%E0%B8%B0%E0%B9%80%E0%B8%81%E0%B8%A5%E0%B8%B7%E0%B8%AD%E0%B8%81%E0%B8%B2.JPG' },
-            { name: 'ลำป้าง', location: [13.688358, 100.660490], image: 'https://raw.githubusercontent.com/Pihcet/SL-MAP/main/%E0%B8%A5%E0%B8%B3%E0%B8%9B%E0%B9%89%E0%B8%B2%E0%B8%87.JPG' },
-            { name: 'โนรา', location: [13.689962, 100.660151], image: 'https://raw.githubusercontent.com/Pihcet/SL-MAP/main/%E0%B9%82%E0%B8%99%E0%B8%A3%E0%B8%B2.JPG' }
+            { name: 'กันภัยมหิดล', location: [13.690556, 100.660551], image: 'https://raw.githubusercontent.com/Pihcet/SL-MAP/main/%E0%B8%81%E0%B8%B1%E0%B8%99%E0%B8%A0%E0%B8%B1%E0%B8%A2%E0%B8%A1%E0%B8%AB%E0%B8%B4%E0%B8%94%E0%B8%A5.JPG', icon: createIcon(iconUrls[0]) },
+            { name: 'ขิงเจ้าเมืองเชียงใหม่', location: [13.689726, 100.662912], image: 'https://raw.githubusercontent.com/Pihcet/SL-MAP/main/%E0%B8%82%E0%B8%B4%E0%B8%87%E0%B9%80%E0%B8%88%E0%B9%89%E0%B8%B2%E0%B9%80%E0%B8%A1%E0%B8%B7%E0%B8%AD%E0%B8%87%E0%B9%80%E0%B8%8A%E0%B8%B5%E0%B8%A2%E0%B8%87%E0%B9%83%E0%B8%AB%E0%B8%A1%E0%B9%88.JPG', icon: createIcon(iconUrls[1]) },
+            { name: 'ถั่วแปปช้าง', location: [13.690463, 100.660682], image: 'https://github.com/Pihcet/SL-MAP/blob/main/%E0%B8%96%E0%B8%B1%E0%B9%88%E0%B8%A7%E0%B9%81%E0%B8%9B%E0%B8%9B%E0%B8%8A%E0%B9%89%E0%B8%B2%E0%B8%87.JPG?raw=true', icon: createIcon(iconUrls[2]) },
+            { name: 'บุหรง', location: [13.689321, 100.662220], image: 'https://raw.githubusercontent.com/Pihcet/SL-MAP/main/%E0%B8%9A%E0%B8%B8%E0%B8%AB%E0%B8%A3%E0%B8%87.JPG', icon: createIcon(iconUrls[3]) },
+            { name: 'ปอพราน', location: [13.688729, 100.659787], image: 'https://raw.githubusercontent.com/Pihcet/SL-MAP/main/%E0%B8%9B%E0%B8%AD%E0%B8%9E%E0%B8%A3%E0%B8%B2%E0%B8%99.JPG', icon: createIcon(iconUrls[4]) },
+            { name: 'ผีพวนน้อย', location: [13.689570, 100.662376], image: 'https://raw.githubusercontent.com/Pihcet/SL-MAP/main/%E0%B8%9C%E0%B8%B5%E0%B8%9E%E0%B8%A7%E0%B8%99%E0%B8%99%E0%B9%89%E0%B8%AD%E0%B8%A2.JPG', icon: createIcon(iconUrls[5]) },
+            { name: 'พลับเขา', location: [13.688180, 100.660626], image: 'https://raw.githubusercontent.com/Pihcet/SL-MAP/main/%E0%B8%9E%E0%B8%A5%E0%B8%B1%E0%B8%9A%E0%B9%80%E0%B8%82%E0%B8%B2.JPG', icon: createIcon(iconUrls[6]) },
+            { name: 'พะยอม', location: [13.681492, 100.661494], image: 'https://raw.githubusercontent.com/Pihcet/SL-MAP/main/%E0%B8%9E%E0%B8%B0%E0%B8%A2%E0%B8%AD%E0%B8%A1.JPG', icon: createIcon(iconUrls[7]) },
+            { name: 'มะเกลือกา', location: [13.688403, 100.660265], image: 'https://raw.githubusercontent.com/Pihcet/SL-MAP/main/%E0%B8%A1%E0%B8%B0%E0%B9%80%E0%B8%81%E0%B8%A5%E0%B8%B7%E0%B8%AD%E0%B8%81%E0%B8%B2.JPG', icon: createIcon(iconUrls[8]) },
+            { name: 'ลำป้าง', location: [13.688358, 100.660490], image: 'https://raw.githubusercontent.com/Pihcet/SL-MAP/main/%E0%B8%A5%E0%B8%B3%E0%B8%9B%E0%B9%89%E0%B8%B2%E0%B8%87.JPG', icon: createIcon(iconUrls[9]) },
+            { name: 'โนรา', location: [13.689962, 100.660151], image: 'https://raw.githubusercontent.com/Pihcet/SL-MAP/main/%E0%B9%82%E0%B8%99%E0%B8%A3%E0%B8%B2.JPG', icon: createIcon(iconUrls[10]) }
         ];
 
         flowers.forEach(function(flower) {
-            var marker = L.marker(flower.location, { icon: smallIcon }).addTo(map);
+            var marker = L.marker(flower.location, { icon: flower.icon }).addTo(map);
             var popupContent = '<b>' + flower.name + '</b><br><img src="' + flower.image + '" alt="' + flower.name + '" style="width:200px;height:auto;">';
             marker.bindPopup(popupContent);
         });
