@@ -7,25 +7,11 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
     <style>
         body, html { height: 100%; margin: 0; }
-        #map { height: 80%; }
-        #uploadForm { height: 20%; padding: 10px; background-color: #f9f9f9; }
+        #map { height: 100%; }
     </style>
 </head>
 <body>
     <div id="map"></div>
-    <div id="uploadForm">
-        <form id="fileUploadForm" enctype="multipart/form-data">
-            <label for="plantName">ชื่อพืช:</label>
-            <input type="text" id="plantName" name="plantName" required><br><br>
-            <label for="plantLocation">พิกัด (lat,lng):</label>
-            <input type="text" id="plantLocation" name="plantLocation" required><br><br>
-            <label for="plantImage">อัปโหลดรูปภาพพืช:</label>
-            <input type="file" id="plantImage" name="plantImage" accept="image/*" required><br><br>
-            <label for="adminPassword">รหัสผ่านแอดมิน:</label>
-            <input type="password" id="adminPassword" name="adminPassword" required><br><br>
-            <input type="submit" value="อัปโหลด">
-        </form>
-    </div>
 
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
     <script>
@@ -52,10 +38,17 @@
         });
 
         var flowers = [
-            { name: 'บุหรง', location: [13.689345, 100.662049], image: 'https://raw.githubusercontent.com/Pihcet/SL-MAP/main/1.%E0%B8%9A%E0%B8%B8%E0%B8%AB%E0%B8%A3%E0%B8%87.JPG' },
-            { name: 'ผีพวนน้อย', location: [13.689572, 100.662406], image: 'https://raw.githubusercontent.com/Pihcet/SL-MAP/main/2.%E0%B8%9C%E0%B8%B5%E0%B8%9E%E0%B8%A7%E0%B8%99%E0%B9%89%E0%B8%AD%E0%B8%A2.JPG' },
-            { name: 'ขิงมุกดา', location: [13.689741, 100.662901], image: 'https://raw.githubusercontent.com/Pihcet/SL-MAP/main/3.%E0%B8%82%E0%B8%B4%E0%B8%87%E0%B8%A1%E0%B8%B8%E0%B8%81%E0%B8%94%E0%B8%B2.JPG' },
-            { name: 'ทองหลางแดง', location: [13.689227, 100.662440], image: 'https://raw.githubusercontent.com/Pihcet/SL-MAP/main/4.%E0%B8%97%E0%B8%AD%E0%B8%87%E0%B8%AB%E0%B8%A5%E0%B8%B2%E0%B8%87%E0%B9%81%E0%B8%94%E0%B8%87.JPG' }
+            { name: 'กันภัยมหิดล', location: [13.690556, 100.660551], image: 'https://raw.githubusercontent.com/Pihcet/SL-MAP/main/%E0%B8%81%E0%B8%B1%E0%B8%99%E0%B8%A0%E0%B8%B1%E0%B8%A2%E0%B8%A1%E0%B8%AB%E0%B8%B4%E0%B8%94%E0%B8%A5.JPG' },
+            { name: 'ขิงเจ้าเมืองเชียงใหม่', location: [13.689726, 100.662912], image: 'https://raw.githubusercontent.com/Pihcet/SL-MAP/main/%E0%B8%82%E0%B8%B4%E0%B8%87%E0%B9%80%E0%B8%88%E0%B9%89%E0%B8%B2%E0%B9%80%E0%B8%A1%E0%B8%B7%E0%B8%AD%E0%B8%87%E0%B9%80%E0%B8%8A%E0%B8%B5%E0%B8%A2%E0%B8%87%E0%B9%83%E0%B8%AB%E0%B8%A1%E0%B9%88.JPG' },
+            { name: 'ถั่วแปปช้าง', location: [13.690463, 100.660682], image: 'https://github.com/Pihcet/SL-MAP/blob/main/%E0%B8%96%E0%B8%B1%E0%B9%88%E0%B8%A7%E0%B9%81%E0%B8%9B%E0%B8%9B%E0%B8%8A%E0%B9%89%E0%B8%B2%E0%B8%87.JPG?raw=true' },
+            { name: 'บุหรง', location: [13.689321, 100.662220], image: 'https://raw.githubusercontent.com/Pihcet/SL-MAP/main/%E0%B8%9A%E0%B8%B8%E0%B8%AB%E0%B8%A3%E0%B8%87.JPG' },
+            { name: 'ปอพราน', location: [13.688729, 100.659787], image: 'https://raw.githubusercontent.com/Pihcet/SL-MAP/main/%E0%B8%9B%E0%B8%AD%E0%B8%9E%E0%B8%A3%E0%B8%B2%E0%B8%99.JPG' },
+            { name: 'ผีพวนน้อย', location: [13.689570, 100.662376], image: 'https://raw.githubusercontent.com/Pihcet/SL-MAP/main/%E0%B8%9C%E0%B8%B5%E0%B8%9E%E0%B8%A7%E0%B8%99%E0%B8%99%E0%B9%89%E0%B8%AD%E0%B8%A2.JPG' },
+            { name: 'พลับเขา', location: [13.688180, 100.660626], image: 'https://raw.githubusercontent.com/Pihcet/SL-MAP/main/%E0%B8%9E%E0%B8%A5%E0%B8%B1%E0%B8%9A%E0%B9%80%E0%B8%82%E0%B8%B2.JPG' },
+            { name: 'พะยอม', location: [13.681492, 100.661494], image: 'https://raw.githubusercontent.com/Pihcet/SL-MAP/main/%E0%B8%9E%E0%B8%B0%E0%B8%A2%E0%B8%AD%E0%B8%A1.JPG' },
+            { name: 'มะเกลือกา', location: [13.688403, 100.660265], image: 'https://raw.githubusercontent.com/Pihcet/SL-MAP/main/%E0%B8%A1%E0%B8%B0%E0%B9%80%E0%B8%81%E0%B8%A5%E0%B8%B7%E0%B8%AD%E0%B8%81%E0%B8%B2.JPG' },
+            { name: 'ลำป้าง', location: [13.688358, 100.660490], image: 'https://raw.githubusercontent.com/Pihcet/SL-MAP/main/%E0%B8%A5%E0%B8%B3%E0%B8%9B%E0%B9%89%E0%B8%B2%E0%B8%87.JPG' },
+            { name: 'โนรา', location: [13.689962, 100.660151], image: 'https://raw.githubusercontent.com/Pihcet/SL-MAP/main/%E0%B9%82%E0%B8%99%E0%B8%A3%E0%B8%B2.JPG' }
         ];
 
         flowers.forEach(function(flower) {
@@ -91,36 +84,6 @@
         
         locateUser();
         setInterval(locateUser, 300000);
-
-        // ส่วนการอัพโหลดไฟล์
-        document.getElementById('fileUploadForm').addEventListener('submit', function(event) {
-            event.preventDefault();
-            var formData = new FormData(this);
-            var adminPassword = formData.get('adminPassword');
-
-            if (adminPassword !== '1234') { // เปลี่ยนรหัสผ่านเป็นรหัสที่คุณใช้จริง
-                alert('รหัสผ่านไม่ถูกต้อง');
-                return;
-            }
-
-            var plantName = formData.get('plantName');
-            var plantLocation = formData.get('plantLocation').split(',');
-            var plantImage = URL.createObjectURL(formData.get('plantImage'));
-
-            var newFlower = {
-                name: plantName,
-                location: [parseFloat(plantLocation[0]), parseFloat(plantLocation[1])],
-                image: plantImage
-            };
-
-            flowers.push(newFlower);
-            var marker = L.marker(newFlower.location, { icon: smallIcon }).addTo(map);
-            var popupContent = '<b>' + newFlower.name + '</b><br><img src="' + newFlower.image + '" alt="' + newFlower.name + '" style="width:200px;height:auto;">';
-            marker.bindPopup(popupContent);
-
-            alert('อัปโหลดข้อมูลสำเร็จ');
-            this.reset();
-        });
     </script>
 </body>
 </html>
