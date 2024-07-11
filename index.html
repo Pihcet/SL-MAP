@@ -8,10 +8,24 @@
     <style>
         body, html { height: 100%; margin: 0; }
         #map { height: 100%; }
+        .filter-button {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            z-index: 1000;
+            background-color: white;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
     </style>
 </head>
 <body>
     <div id="map"></div>
+    <div class="filter-button">
+        <button onclick="toggleFlowers()">Flowers</button>
+        <button onclick="toggleBirds()">Birds</button>
+    </div>
 
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
     <script>
@@ -55,24 +69,49 @@
             { name: 'กะรางหัวขวาน', location: [13.686256, 100.660496], image: 'https://raw.githubusercontent.com/Pihcet/SL-MAP/main/%E0%B8%81%E0%B8%B0%E0%B8%A3%E0%B8%B2%E0%B8%87%E0%B8%AB%E0%B8%B1%E0%B8%A7%E0%B8%82%E0%B8%A7%E0%B8%B2%E0%B8%99.JPG' },
             { name: 'กาเหว่า', location: [13.688186, 100.658935], image: 'https://github.com/Pihcet/SL-MAP/blob/main/%E0%B8%81%E0%B8%B2%E0%B9%80%E0%B8%AB%E0%B8%A7%E0%B9%88%E0%B8%B2.JPG?raw=true' },
             { name: 'กิ้งโครงคอดำ', location: [13.689510, 100.663461], image: 'https://raw.githubusercontent.com/Pihcet/SL-MAP/main/%E0%B8%81%E0%B8%B4%E0%B9%89%E0%B8%87%E0%B9%82%E0%B8%84%E0%B8%A3%E0%B8%87%E0%B8%84%E0%B8%AD%E0%B8%94%E0%B8%B3.JPG' },
-            { name: 'กินปลีอกเหลือง', location: [13.689241, 100.661536], image: 'https://raw.githubusercontent.com/Pihcet/SL-MAP/main/%E0%B8%81%E0%B8%B4%E0%B8%99%E0%B8%9B%E0%B8%A5%E0%B8%B5%E0%B8%AD%E0%B8%81%E0%B9%80%E0%B8%AB%E0%B8%A5%E0%B8%B7%E0%B8%AD%E0%B8%87.JPG' },
+            { name: 'กินปลีอกเหลือง', location: [13.689235, 100.661492], image: 'https://raw.githubusercontent.com/Pihcet/SL-MAP/main/%E0%B8%81%E0%B8%B4%E0%B8%99%E0%B8%9B%E0%B8%A5%E0%B8%B5%E0%B8%AD%E0%B8%81%E0%B9%80%E0%B8%AB%E0%B8%A5%E0%B8%B7%E0%B8%AD%E0%B8%87.JPG' },
             { name: 'แซงแซวหางปลา', location: [13.688827, 100.659391], image: 'https://raw.githubusercontent.com/Pihcet/SL-MAP/main/%E0%B9%81%E0%B8%8B%E0%B8%87%E0%B9%81%E0%B8%8B%E0%B8%A7%E0%B8%AB%E0%B8%B2%E0%B8%87%E0%B8%9B%E0%B8%A5%E0%B8%B2.jpg' },
             { name: 'ต้อยตีวิด', location: [13.681635, 100.660939], image: 'https://raw.githubusercontent.com/Pihcet/SL-MAP/main/%E0%B8%95%E0%B9%89%E0%B8%AD%E0%B8%A2%E0%B8%95%E0%B8%B5%E0%B8%A7%E0%B8%B4%E0%B8%94.JPG' },
             { name: 'ตะขาบทุ่ง', location: [13.688166, 100.659192], image: 'https://raw.githubusercontent.com/Pihcet/SL-MAP/main/%E0%B8%95%E0%B8%B0%E0%B8%82%E0%B8%B2%E0%B8%9A%E0%B8%97%E0%B8%B8%E0%B9%88%E0%B8%87.jpg' },
             { name: 'พญาไฟเล็ก', location: [13.689571, 100.661398], image: 'https://raw.githubusercontent.com/Pihcet/SL-MAP/main/%E0%B8%9E%E0%B8%8D%E0%B8%B2%E0%B9%84%E0%B8%9F%E0%B9%80%E0%B8%A5%E0%B9%87%E0%B8%81.JPG' }
         ];
 
+        var flowerMarkers = [];
+        var birdMarkers = [];
+
         flowers.forEach(function(flower) {
-            var marker = L.marker(flower.location, { icon: greenIcon }).addTo(map);
+            var marker = L.marker(flower.location, { icon: greenIcon });
             var popupContent = '<b>' + flower.name + '</b><br><img src="' + flower.image + '" alt="' + flower.name + '" style="width:200px;height:auto;">';
             marker.bindPopup(popupContent);
+            flowerMarkers.push(marker);
+            marker.addTo(map);
         });
 
         birds.forEach(function(bird) {
-            var marker = L.marker(bird.location, { icon: blueIcon }).addTo(map);
+            var marker = L.marker(bird.location, { icon: blueIcon });
             var popupContent = '<b>' + bird.name + '</b><br><img src="' + bird.image + '" alt="' + bird.name + '" style="width:200px;height:auto;">';
             marker.bindPopup(popupContent);
+            birdMarkers.push(marker);
+            marker.addTo(map);
         });
+
+        function toggleMarkers(markers) {
+            markers.forEach(function(marker) {
+                if (map.hasLayer(marker)) {
+                    map.removeLayer(marker);
+                } else {
+                    map.addLayer(marker);
+                }
+            });
+        }
+
+        function toggleFlowers() {
+            toggleMarkers(flowerMarkers);
+        }
+
+        function toggleBirds() {
+            toggleMarkers(birdMarkers);
+        }
 
         var userMarker;
         var userCircle;
