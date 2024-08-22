@@ -1,31 +1,21 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Suan Luang Rama IX Park Flower and Bird Tour</title>
+    <title>Suan Luang Rama IX Park Flower Tour</title>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
     <style>
         body, html { height: 100%; margin: 0; }
         #map { height: 100%; }
-        .filter-button {
-            position: absolute;
-            top: 10px;
-            left: 10px;
-            z-index: 1000;
-            background-color: white;
-            padding: 10px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
+        .leaflet-popup-content img {
+            width: 200px; /* ปรับขนาดให้ใหญ่ขึ้น */
+            height: auto;
         }
     </style>
 </head>
 <body>
     <div id="map"></div>
-    <div class="filter-button">
-        <button onclick="toggleFlowers()">Flowers</button>
-        <button onclick="toggleBirds()">Birds</button>
-    </div>
 
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
     <script>
@@ -38,109 +28,525 @@
         function createIcon(iconUrl) {
             return new L.Icon({
                 iconUrl: iconUrl,
-                iconSize: [25, 41],
-                iconAnchor: [12, 41],
-                popupAnchor: [1, -34],
+                iconSize: [20, 30],
+                iconAnchor: [10, 30],
+                popupAnchor: [1, -25],
                 shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png',
-                shadowSize: [41, 41],
-                shadowAnchor: [12, 41]
+                shadowSize: [30, 30],
+                shadowAnchor: [15, 30]
             });
         }
 
         var greenIcon = createIcon('https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-green.png');
-        var redIcon = createIcon('https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-red.png');
-        var blueIcon = createIcon('https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-blue.png');
 
         var flowers = [
-            { name: 'กันภัยมหิดล', location: [13.690556, 100.660551], image: 'https://raw.githubusercontent.com/Pihcet/SL-MAP/main/%E0%B8%81%E0%B8%B1%E0%B8%99%E0%B8%A0%E0%B8%B1%E0%B8%A2%E0%B8%A1%E0%B8%AB%E0%B8%B4%E0%B8%94%E0%B8%A5.JPG' },
-            { name: 'ขิงเจ้าเมืองเชียงใหม่', location: [13.689726, 100.662912], image: 'https://raw.githubusercontent.com/Pihcet/SL-MAP/main/%E0%B8%82%E0%B8%B4%E0%B8%87%E0%B9%80%E0%B8%88%E0%B9%89%E0%B8%B2%E0%B9%80%E0%B8%A1%E0%B8%B7%E0%B8%AD%E0%B8%87%E0%B9%80%E0%B8%8A%E0%B8%B5%E0%B8%A2%E0%B8%87%E0%B9%83%E0%B8%AB%E0%B8%A1%E0%B9%88.JPG' },
-            { name: 'ถั่วแปปช้าง', location: [13.690463, 100.660682], image: 'https://github.com/Pihcet/SL-MAP/blob/main/%E0%B8%96%E0%B8%B1%E0%B9%88%E0%B8%A7%E0%B9%81%E0%B8%9B%E0%B8%9B%E0%B8%8A%E0%B9%89%E0%B8%B2%E0%B8%87.JPG?raw=true' },
-            { name: 'บุหรง', location: [13.689321, 100.662220], image: 'https://raw.githubusercontent.com/Pihcet/SL-MAP/main/%E0%B8%9A%E0%B8%B8%E0%B8%AB%E0%B8%A3%E0%B8%87.JPG' },
-            { name: 'ปอพราน', location: [13.688729, 100.659787], image: 'https://raw.githubusercontent.com/Pihcet/SL-MAP/main/%E0%B8%9B%E0%B8%AD%E0%B8%9E%E0%B8%A3%E0%B8%B2%E0%B8%99.JPG' },
-            { name: 'ผีพวนน้อย', location: [13.689570, 100.662376], image: 'https://raw.githubusercontent.com/Pihcet/SL-MAP/main/%E0%B8%9C%E0%B8%B5%E0%B8%9E%E0%B8%A7%E0%B8%99%E0%B8%99%E0%B9%89%E0%B8%AD%E0%B8%A2.JPG' },
-            { name: 'พลับเขา', location: [13.688180, 100.660626], image: 'https://raw.githubusercontent.com/Pihcet/SL-MAP/main/%E0%B8%9E%E0%B8%A5%E0%B8%B1%E0%B8%9A%E0%B9%80%E0%B8%82%E0%B8%B2.JPG' },
-            { name: 'พะยอม', location: [13.681492, 100.661494], image: 'https://raw.githubusercontent.com/Pihcet/SL-MAP/main/%E0%B8%9E%E0%B8%B0%E0%B8%A2%E0%B8%AD%E0%B8%A1.JPG' },
-            { name: 'มะเกลือกา', location: [13.688403, 100.660265], image: 'https://raw.githubusercontent.com/Pihcet/SL-MAP/main/%E0%B8%A1%E0%B8%B0%E0%B9%80%E0%B8%81%E0%B8%A5%E0%B8%B7%E0%B8%AD%E0%B8%81%E0%B8%B2.JPG' },
-            { name: 'ลำป้าง', location: [13.688358, 100.660490], image: 'https://raw.githubusercontent.com/Pihcet/SL-MAP/main/%E0%B8%A5%E0%B8%B3%E0%B8%9B%E0%B9%89%E0%B8%B2%E0%B8%87.JPG' },
-            { name: 'โนรา', location: [13.689962, 100.660151], image: 'https://raw.githubusercontent.com/Pihcet/SL-MAP/main/%E0%B9%82%E0%B8%99%E0%B8%A3%E0%B8%B2.JPG' }
+            {
+                "name_th": "บุหรง",
+                "name_scientific": "<i>Dasymaschalon dasymaschalum</i> (Blume) I.M.Turner",
+                "family": "Annonaceae",
+                "coordinates": {
+                    "latitude": 13.689252,
+                    "longitude": 100.662225
+                },
+                "image_url": "https://raw.githubusercontent.com/Pihcet/SL-MAP/56e79c43c3f38c4f1b7f138023b726f245c138c1/%E0%B8%9A%E0%B8%B8%E0%B8%AB%E0%B8%A3%E0%B8%87.jpg"
+            },
+            {
+                "name_th": "พีพวนน้อย",
+                "name_scientific": "<i>Uvaria rufa</i> Blume",
+                "family": "Annonaceae",
+                "coordinates": {
+                    "latitude": 13.689555,
+                    "longitude": 100.662386
+                },
+                "image_url": "https://raw.githubusercontent.com/Pihcet/SL-MAP/56e79c43c3f38c4f1b7f138023b726f245c138c1/%E0%B8%9E%E0%B8%B5%E0%B8%9E%E0%B8%A7%E0%B8%99%E0%B8%99%E0%B9%89%E0%B8%AD%E0%B8%A2.jpg"
+            },
+            {
+                "name_th": "ชำมะนาดเล็ก",
+                "name_scientific": "<i>Vallaris solanacea</i> (Roth) Kuntze",
+                "family": "Apocynaceae",
+                "coordinates": {
+                    "latitude": 13.688403,
+                    "longitude": 100.658648
+                },
+                "image_url": "https://raw.githubusercontent.com/Pihcet/SL-MAP/56e79c43c3f38c4f1b7f138023b726f245c138c1/%E0%B8%8A%E0%B8%B3%E0%B8%A1%E0%B8%B0%E0%B8%99%E0%B8%B2%E0%B8%94%E0%B9%80%E0%B8%A5%E0%B9%87%E0%B8%81.jpg"
+            },
+            {
+                "name_th": "โมกดอกแดง",
+                "name_scientific": "<i>Wrightia dubia</i> (Sims) Spreng.",
+                "family": "Apocynaceae",
+                "coordinates": {
+                    "latitude": 13.689481,
+                    "longitude": 100.662476
+                },
+                "image_url": "https://raw.githubusercontent.com/Pihcet/SL-MAP/56e79c43c3f38c4f1b7f138023b726f245c138c1/%E0%B9%82%E0%B8%A1%E0%B8%81%E0%B8%94%E0%B8%AD%E0%B8%81%E0%B9%81%E0%B8%94%E0%B8%87.jpg"
+            },
+            {
+                "name_th": "โมกราชินี",
+                "name_scientific": "<i>Wrightia sirikitiae</i> D.J.Middleton & Santisuk",
+                "family": "Apocynaceae",
+                "coordinates": {
+                    "latitude": 13.689500,
+                    "longitude": 100.661732
+                },
+                "image_url": "https://raw.githubusercontent.com/Pihcet/SL-MAP/56e79c43c3f38c4f1b7f138023b726f245c138c1/%E0%B9%82%E0%B8%A1%E0%B8%81%E0%B8%A3%E0%B8%B2%E0%B8%8A%E0%B8%B4%E0%B8%99%E0%B8%B5.jpg"
+            },
+            {
+                "name_th": "โมกหลวง",
+                "name_scientific": "<i>Holarrhena pubescens</i> Wall. ex G.Don",
+                "family": "Apocynaceae",
+                "coordinates": {
+                    "latitude": 13.689484,
+                    "longitude": 100.662604
+                },
+                "image_url": "https://raw.githubusercontent.com/Pihcet/SL-MAP/56e79c43c3f38c4f1b7f138023b726f245c138c1/%E0%B9%82%E0%B8%A1%E0%B8%81%E0%B8%AB%E0%B8%A5%E0%B8%A7%E0%B8%87.jpg"
+            },
+            {
+                "name_th": "แคหางค่าง",
+                "name_scientific": "<i>Fernandoa adenophylla</i> (Wall. ex G.Don) Steenis",
+                "family": "Bignoniaceae",
+                "coordinates": {
+                    "latitude": 13.689412,
+                    "longitude": 100.661066
+                },
+                "image_url": "https://raw.githubusercontent.com/Pihcet/SL-MAP/56e79c43c3f38c4f1b7f138023b726f245c138c1/%E0%B9%81%E0%B8%84%E0%B8%AB%E0%B8%B2%E0%B8%87%E0%B8%84%E0%B9%88%E0%B8%B2%E0%B8%87.jpg"
+            },
+            {
+                "name_th": "ตาเบบาฮามาสไฮบริด",
+                "name_scientific": "<i>Tabebuia bahamensis</i> (Northr.) Britton",
+                "family": "Bignoniaceae",
+                "coordinates": {
+                    "latitude": 13.689126,
+                    "longitude": 100.661109
+                },
+                "image_url": "https://raw.githubusercontent.com/Pihcet/SL-MAP/56e79c43c3f38c4f1b7f138023b726f245c138c1/%E0%B8%95%E0%B8%B2%E0%B9%80%E0%B8%9A%E0%B8%9A%E0%B8%B2%E0%B8%AE%E0%B8%B2%E0%B8%A1%E0%B8%B2%E0%B8%AA%E0%B9%84%E0%B8%AE%E0%B8%9A%E0%B8%A3%E0%B8%B4%E0%B8%94.jpg"
+            },
+            {
+                "name_th": "ตาเบม่วงแดง",
+                "name_scientific": "<i>Tabebuia haemantha</i> (Bertol. ex Spreng.) DC.",
+                "family": "Bignoniaceae",
+                "coordinates": {
+                    "latitude": 13.689277,
+                    "longitude": 100.661156
+                },
+                "image_url": "https://raw.githubusercontent.com/Pihcet/SL-MAP/56e79c43c3f38c4f1b7f138023b726f245c138c1/%E0%B8%95%E0%B8%B2%E0%B9%80%E0%B8%9A%E0%B8%A1%E0%B9%88%E0%B8%A7%E0%B8%87%E0%B9%81%E0%B8%94%E0%B8%87.jpg"
+            },
+            {
+                "name_th": "ปีบทอง",
+                "name_scientific": "<i>Radermachera hainanensis</i> Merr.",
+                "family": "Bignoniaceae",
+                "coordinates": {
+                    "latitude": 13.682976,
+                    "longitude": 100.660551
+                },
+                "image_url": "https://raw.githubusercontent.com/Pihcet/SL-MAP/56e79c43c3f38c4f1b7f138023b726f245c138c1/%E0%B8%9B%E0%B8%B5%E0%B8%9A%E0%B8%97%E0%B8%AD%E0%B8%87.jpg"
+            },
+            {
+                "name_th": "ปีบยูนาน",
+                "name_scientific": "<i>Radermachera yunnanensis</i> C.Y.Wu & W.C.Yin",
+                "family": "Bignoniaceae",
+                "coordinates": {
+                    "latitude": 13.689201,
+                    "longitude": 100.661179
+                },
+                "image_url": "https://raw.githubusercontent.com/Pihcet/SL-MAP/56e79c43c3f38c4f1b7f138023b726f245c138c1/%E0%B8%9B%E0%B8%B5%E0%B8%9A%E0%B8%A2%E0%B8%B9%E0%B8%99%E0%B8%B2%E0%B8%99.jpg"
+            },
+            {
+                "name_th": "จั่นน้ำ",
+                "name_scientific": "<i>Ehretia winitii</i> Craib",
+                "family": "Boraginaceae",
+                "coordinates": {
+                    "latitude": 13.687498,
+                    "longitude": 100.658009
+                },
+                "image_url": "https://raw.githubusercontent.com/Pihcet/SL-MAP/56e79c43c3f38c4f1b7f138023b726f245c138c1/%E0%B8%88%E0%B8%B1%E0%B9%88%E0%B8%99%E0%B8%99%E0%B9%89%E0%B8%B3.jpg"
+            },
+            {
+                "name_th": "สารภี",
+                "name_scientific": "<i>Mammea siamensis</i> (Miq.) T.Anderson",
+                "family": "Calophyllaceae",
+                "coordinates": {
+                    "latitude": 13.689525,
+                    "longitude": 100.662810
+                },
+                "image_url": "https://raw.githubusercontent.com/Pihcet/SL-MAP/56e79c43c3f38c4f1b7f138023b726f245c138c1/%E0%B8%AA%E0%B8%B2%E0%B8%A3%E0%B8%A0%E0%B8%B5.jpg"
+            },
+            {
+                "name_th": "เกล็ดกระโห้",
+                "name_scientific": "<i>Clusia rosea</i>  Jacq.",
+                "family": "Bignoniaceae",
+                "coordinates": {
+                    "latitude": 13.689581,
+                    "longitude": 100.664780
+                },
+                "image_url": "https://raw.githubusercontent.com/Pihcet/SL-MAP/56e79c43c3f38c4f1b7f138023b726f245c138c1/%E0%B9%80%E0%B8%81%E0%B8%A5%E0%B9%87%E0%B8%94%E0%B8%81%E0%B8%A3%E0%B8%B0%E0%B9%82%E0%B8%AB%E0%B9%89.jpg"
+            },
+            {
+                "name_th": "มะดะญี่ปุ่น",
+                "name_scientific": "<i>Garcinia subelliptica </i> Merr. ",
+                "family": "Clusiaceae",
+                "coordinates": {
+                    "latitude": 13.689483,
+                    "longitude": 100.662913
+                },
+                "image_url": "https://raw.githubusercontent.com/Pihcet/SL-MAP/56e79c43c3f38c4f1b7f138023b726f245c138c1/%E0%B8%A1%E0%B8%B0%E0%B8%94%E0%B8%B0%E0%B8%8D%E0%B8%B5%E0%B9%88%E0%B8%9B%E0%B8%B8%E0%B9%88%E0%B8%99.jpg"
+            },
+            {
+                "name_th": "ส้านดอกขาว",
+                "name_scientific": "<i>Dillenia philippinensis Rolfe </i> Merr. ",
+                "family": "Dilleniaceae",
+                "coordinates": {
+                    "latitude": 13.688271,
+                    "longitude": 100.66058
+                },
+                "image_url": "https://raw.githubusercontent.com/Pihcet/SL-MAP/56e79c43c3f38c4f1b7f138023b726f245c138c1/%E0%B8%AA%E0%B9%89%E0%B8%B2%E0%B8%99%E0%B8%94%E0%B8%AD%E0%B8%81%E0%B8%82%E0%B8%B2%E0%B8%A7.jpg"
+            },
+    {
+        "name_th": "พะยอม",
+        "name_scientific": "<i>Anthoshorea roxburghii</i> (G.Don) P.S.Ashton & J.Heck.",
+        "family": "Dipterocarpaceae",
+        "coordinates": {
+            "latitude": 13.681114,
+            "longitude": 100.661311
+        },
+        "image_url": "https://raw.githubusercontent.com/Pihcet/SL-MAP/56e79c43c3f38c4f1b7f138023b726f245c138c1/%E0%B8%9E%E0%B8%B0%E0%B8%A2%E0%B8%AD%E0%B8%A1.jpg"
+    },
+    {
+        "name_th": "พลับเขา",
+        "name_scientific": "<i>Diospyros undulata</i> Wall. ex G.Don",
+        "family": "Ebenaceae",
+        "coordinates": {
+            "latitude": 13.688079,
+            "longitude": 100.660485
+        },
+        "image_url": "https://raw.githubusercontent.com/Pihcet/SL-MAP/56e79c43c3f38c4f1b7f138023b726f245c138c1/%E0%B8%9E%E0%B8%A5%E0%B8%B1%E0%B8%9A%E0%B9%80%E0%B8%82%E0%B8%B2.jpg"
+    },
+    {
+        "name_th": "มะเกลือกา",
+        "name_scientific": "<i>Diospyros gracilis</i> H.R.Fletcher",
+        "family": "Ebenaceae",
+        "coordinates": {
+            "latitude": 13.688410,
+            "longitude": 100.660065
+        },
+        "image_url": "https://raw.githubusercontent.com/Pihcet/SL-MAP/56e79c43c3f38c4f1b7f138023b726f245c138c1/%E0%B8%A1%E0%B8%B0%E0%B9%80%E0%B8%81%E0%B8%A5%E0%B8%B7%E0%B8%AD%E0%B8%81%E0%B8%B2.jpg"
+    },
+    {
+        "name_th": "มะกอกน้ำ",
+        "name_scientific": "<i>Elaeocarpus hygrophilus</i> Kurz",
+        "family": "Elaeocarpaceae",
+        "coordinates": {
+            "latitude": 13.684524,
+            "longitude": 100.663716
+        },
+        "image_url": "https://raw.githubusercontent.com/Pihcet/SL-MAP/56e79c43c3f38c4f1b7f138023b726f245c138c1/%E0%B8%A1%E0%B8%B0%E0%B8%81%E0%B8%AD%E0%B8%81%E0%B8%99%E0%B9%89%E0%B8%B3.jpg"
+    },
+    {
+        "name_th": "กันภัยมหิดล",
+        "name_scientific": "<i>Afgekia mahidoliae</i> B.L.Burtt & Chermsir.",
+        "family": "Fabaceae",
+        "coordinates": {
+            "latitude": 13.690553,
+            "longitude": 100.660543
+        },
+        "image_url": "https://raw.githubusercontent.com/Pihcet/SL-MAP/56e79c43c3f38c4f1b7f138023b726f245c138c1/%E0%B8%81%E0%B8%B1%E0%B8%99%E0%B8%A0%E0%B8%B1%E0%B8%A2%E0%B8%A1%E0%B8%AB%E0%B8%B4%E0%B8%94%E0%B8%A5.jpg"
+    },
+    {
+        "name_th": "คูนสายรุ้ง",
+        "name_scientific": "<i>Cassia × nealiae</i> H.S.Irwin & Barneby",
+        "family": "Fabaceae",
+        "coordinates": {
+            "latitude": 13.688185,
+            "longitude": 100.658946
+        },
+        "image_url": "https://raw.githubusercontent.com/Pihcet/SL-MAP/56e79c43c3f38c4f1b7f138023b726f245c138c1/%E0%B8%84%E0%B8%B9%E0%B8%99%E0%B8%AA%E0%B8%B2%E0%B8%A2%E0%B8%A3%E0%B8%B8%E0%B9%89%E0%B8%87.jpg"
+    },
+    {
+        "name_th": "ถั่วแปบช้าง",
+        "name_scientific": "<i>Afgekia sericea</i> Craib",
+        "family": "Fabaceae",
+        "coordinates": {
+            "latitude": 13.690494,
+            "longitude": 100.660496
+        },
+        "image_url": "https://raw.githubusercontent.com/Pihcet/SL-MAP/56e79c43c3f38c4f1b7f138023b726f245c138c1/%E0%B8%96%E0%B8%B1%E0%B9%88%E0%B8%A7%E0%B9%81%E0%B8%9B%E0%B8%9A%E0%B8%8A%E0%B9%89%E0%B8%B2%E0%B8%87.jpg"
+    },
+    {
+        "name_th": "ทองหลางแดง",
+        "name_scientific": "<i>Erythrina crista-galli</i> L.",
+        "family": "Fabaceae",
+        "coordinates": {
+            "latitude": 13.688867,
+            "longitude": 100.661882
+        },
+        "image_url": "https://raw.githubusercontent.com/Pihcet/SL-MAP/56e79c43c3f38c4f1b7f138023b726f245c138c1/%E0%B8%97%E0%B8%AD%E0%B8%87%E0%B8%AB%E0%B8%A5%E0%B8%B2%E0%B8%87%E0%B9%81%E0%B8%94%E0%B8%87.jpg"
+    },
+    {
+        "name_th": "ใบไม้สีทอง",
+        "name_scientific": "<i>Phanera aureifolia</i> (K.Larsen & S.S.Larsen) Bandyop., Ghoshal & M.K.Pathak",
+        "family": "Fabaceae",
+        "coordinates": {
+            "latitude": 13.688310,
+            "longitude": 100.658923
+        },
+        "image_url": "https://raw.githubusercontent.com/Pihcet/SL-MAP/56e79c43c3f38c4f1b7f138023b726f245c138c1/%E0%B9%83%E0%B8%9A%E0%B9%84%E0%B8%A1%E0%B9%89%E0%B8%AA%E0%B8%B5%E0%B8%97%E0%B8%AD%E0%B8%87.jpg"
+    },
+    {
+        "name_th": "สาธร",
+        "name_scientific": "<i>Imbralyx leucanthus var. buteoides</i> (Gagnep.) Z.Q.Song",
+        "family": "Fabaceae",
+        "coordinates": {
+            "latitude": 13.688921,
+            "longitude": 100.661614
+        },
+        "image_url": "https://raw.githubusercontent.com/Pihcet/SL-MAP/56e79c43c3f38c4f1b7f138023b726f245c138c1/%E0%B8%AA%E0%B8%B2%E0%B8%98%E0%B8%A3.jpg"
+    },
+    {
+        "name_th": "โสกสะปัน",
+        "name_scientific": "<i>Brownea grandiceps</i> Jacq.",
+        "family": "Fabaceae",
+        "coordinates": {
+            "latitude": 13.685187,
+            "longitude": 100.663857
+        },
+        "image_url": "https://raw.githubusercontent.com/Pihcet/SL-MAP/56e79c43c3f38c4f1b7f138023b726f245c138c1/%E0%B9%82%E0%B8%AA%E0%B8%81%E0%B8%AA%E0%B8%B0%E0%B8%9B%E0%B8%B1%E0%B8%99.jpg"
+    },
+    {
+        "name_th": "ม่วงนครินทร์",
+        "name_scientific": "<i>Achimenes grandiflora</i> (Schiede) DC.",
+        "family": "Gesneriaceae",
+        "coordinates": {
+            "latitude": 13.689720 ,
+            "longitude": 100.662939
+        },
+        "image_url": "https://raw.githubusercontent.com/Pihcet/SL-MAP/56e79c43c3f38c4f1b7f138023b726f245c138c1/%E0%B8%A1%E0%B9%88%E0%B8%A7%E0%B8%87%E0%B8%99%E0%B8%84%E0%B8%A3%E0%B8%B4%E0%B8%99%E0%B8%97%E0%B8%A3%E0%B9%8C.jpg"
+    },
+    {
+        "name_th": "รักทะเล",
+        "name_scientific": "<i>Scaevola taccada</i> (Gaertn.) Roxb.",
+        "family": "Goodeniaceae",
+        "coordinates": {
+            "latitude": 13.690324,
+            "longitude": 100.661314
+        },
+        "image_url": "https://raw.githubusercontent.com/Pihcet/SL-MAP/56e79c43c3f38c4f1b7f138023b726f245c138c1/%E0%B8%A3%E0%B8%B1%E0%B8%81%E0%B8%97%E0%B8%B0%E0%B9%80%E0%B8%A5.jpg"
+    },
+    {
+        "name_th": "สาละลังกา",
+        "name_scientific": "<i>Couroupita guianensis</i> Aubl.",
+        "family": "Lecythidaceae",
+        "coordinates": {
+            "latitude": 13.689386,
+            "longitude": 100.665589
+        },
+        "image_url": "https://raw.githubusercontent.com/Pihcet/SL-MAP/56e79c43c3f38c4f1b7f138023b726f245c138c1/%E0%B8%AA%E0%B8%B2%E0%B8%A5%E0%B8%B0%E0%B8%A5%E0%B8%B1%E0%B8%87%E0%B8%81%E0%B8%B2.jpg"
+    },
+    {
+        "name_th": "ชมพูส่าหรี",
+        "name_scientific": "<i>Lagerstroemia indica x L. subcostata var. fauriei ‘Tonto’</i>",
+        "family": "Lythraceae",
+        "coordinates": {
+            "latitude": 13.689732,
+            "longitude": 100.662517
+        },
+        "image_url": "https://raw.githubusercontent.com/Pihcet/SL-MAP/56e79c43c3f38c4f1b7f138023b726f245c138c1/%E0%B8%8A%E0%B8%A1%E0%B8%9E%E0%B8%B9%E0%B8%AA%E0%B9%88%E0%B8%B2%E0%B8%AB%E0%B8%A3%E0%B8%B5.jpg"
+    },
+    {
+        "name_th": "ลำพู",
+        "name_scientific": "<i>Sonneratia caseolaris</i> (L.) Engl.",
+        "family": "Lythraceae",
+        "coordinates": {
+            "latitude": 13.684492,
+            "longitude": 100.663397
+        },
+        "image_url": "https://raw.githubusercontent.com/Pihcet/SL-MAP/56e79c43c3f38c4f1b7f138023b726f245c138c1/%E0%B8%A5%E0%B8%B3%E0%B8%9E%E0%B8%B9.jpg"
+    },
+    {
+        "name_th": "โนรี",
+        "name_scientific": "<i>Hiptage lucida</i> Pierre",
+        "family": "Malpighiaceae",
+        "coordinates": {
+            "latitude": 13.689896,
+            "longitude": 100.660103
+        },
+        "image_url": "https://raw.githubusercontent.com/Pihcet/SL-MAP/56e79c43c3f38c4f1b7f138023b726f245c138c1/%E0%B9%82%E0%B8%99%E0%B8%A3%E0%B8%B5.jpg"
+    },
+    {
+        "name_th": "พวงทองเถา",
+        "name_scientific": "<i>Stigmaphyllon ellipticum</i> (Kunth) A.Juss.",
+        "family": "Malpighiaceae",
+        "coordinates": {
+            "latitude": 13.689718,
+            "longitude": 100.663033
+        },
+        "image_url": "https://raw.githubusercontent.com/Pihcet/SL-MAP/56e79c43c3f38c4f1b7f138023b726f245c138c1/%E0%B8%9E%E0%B8%A7%E0%B8%87%E0%B8%97%E0%B8%AD%E0%B8%87%E0%B9%80%E0%B8%96%E0%B8%B2.jpg"
+    },
+    {
+        "name_th": "ปอทะเล",
+        "name_scientific": "<i>Hibiscus tiliaceus</i> L.",
+        "family": "Malvaceae",
+        "coordinates": {
+            "latitude": 13.683654,
+            "longitude": 100.662741
+        },
+        "image_url": "https://raw.githubusercontent.com/Pihcet/SL-MAP/56e79c43c3f38c4f1b7f138023b726f245c138c1/%E0%B8%9B%E0%B8%AD%E0%B8%97%E0%B8%B0%E0%B9%80%E0%B8%A5.jpg"
+    },
+    {
+        "name_th": "ปอบิด",
+        "name_scientific": "<i>Helicteres isora</i> L.",
+        "family": "Malvaceae",
+        "coordinates": {
+            "latitude": 13.690316,
+            "longitude": 100.661729
+        },
+        "image_url": "https://raw.githubusercontent.com/Pihcet/SL-MAP/56e79c43c3f38c4f1b7f138023b726f245c138c1/%E0%B8%9B%E0%B8%AD%E0%B8%9A%E0%B8%B4%E0%B8%94.jpg"
+    },
+    {
+        "name_th": "ปอพราน",
+        "name_scientific": "<i>Colona auriculata</i> (Desf.) Craib",
+        "family": "Malvaceae",
+        "coordinates": {
+            "latitude": 13.688644,
+            "longitude": 100.659850
+        },
+        "image_url": "https://raw.githubusercontent.com/Pihcet/SL-MAP/56e79c43c3f38c4f1b7f138023b726f245c138c1/%E0%B8%9B%E0%B8%AD%E0%B8%9E%E0%B8%A3%E0%B8%B2%E0%B8%99.jpg"
+    },
+    {
+        "name_th": "รวงผึ้ง",
+        "name_scientific": "<i>Schoutenia glomerata</i> King subsp. peregrina (Craib) Roekm.",
+        "family": "Malvaceae",
+        "coordinates": {
+            "latitude": 13.689119,
+            "longitude": 100.665784
+        },
+        "image_url": "https://raw.githubusercontent.com/Pihcet/SL-MAP/56e79c43c3f38c4f1b7f138023b726f245c138c1/%E0%B8%A3%E0%B8%A7%E0%B8%87%E0%B8%9C%E0%B8%B6%E0%B9%89%E0%B8%87.jpg"
+    },
+    {
+        "name_th": "ลำป้าง",
+        "name_scientific": "<i>Pterospermum diversifolium</i> Blume",
+        "family": "Malvaceae",
+        "coordinates": {
+            "latitude": 13.688405,
+            "longitude": 100.660152
+        },
+        "image_url": "https://raw.githubusercontent.com/Pihcet/SL-MAP/56e79c43c3f38c4f1b7f138023b726f245c138c1/%E0%B8%A5%E0%B8%B3%E0%B8%9B%E0%B9%89%E0%B8%B2%E0%B8%87.jpg"
+    },
+    {
+        "name_th": "ลองกอง",
+        "name_scientific": "<i>Lansium parasiticum</i> (Osbeck) K.C.Sahni & Bennet",
+        "family": "Meliaceae",
+        "coordinates": {
+            "latitude": 13.680536,
+            "longitude": 100.661140
+        },
+        "image_url": "https://raw.githubusercontent.com/Pihcet/SL-MAP/56e79c43c3f38c4f1b7f138023b726f245c138c1/%E0%B8%A5%E0%B8%AD%E0%B8%87%E0%B8%81%E0%B8%AD%E0%B8%87.jpg"
+    },
+    {
+        "name_th": "มะลุลี",
+        "name_scientific": "<i>Jasminum multiflorum</i> (Burm.f.) Andrews",
+        "family": "Oleaceae",
+        "coordinates": {
+            "latitude": 13.690417,
+            "longitude": 100.661296
+        },
+        "image_url": "https://raw.githubusercontent.com/Pihcet/SL-MAP/56e79c43c3f38c4f1b7f138023b726f245c138c1/%E0%B8%A1%E0%B8%B0%E0%B8%A5%E0%B8%B8%E0%B8%A5%E0%B8%B5.jpg"
+    },
+    {
+        "name_th": "เตยทะเลด่าง",
+        "name_scientific": "<i>Pandanus tectorius</i> Parkinson ex Du Roi",
+        "family": "Pandanaceae",
+        "coordinates": {
+            "latitude": 13.689403,
+            "longitude": 100.660782
+        },
+        "image_url": "https://raw.githubusercontent.com/Pihcet/SL-MAP/56e79c43c3f38c4f1b7f138023b726f245c138c1/%E0%B9%80%E0%B8%95%E0%B8%A2%E0%B8%97%E0%B8%B0%E0%B9%80%E0%B8%A5%E0%B8%94%E0%B9%88%E0%B8%B2%E0%B8%87.jpg"
+    },
+    {
+        "name_th": "เม่าไข่ปลา",
+        "name_scientific": "<i>Antidesma ghaesembilla</i> Gaertn.",
+        "family": "Phyllanthaceae",
+        "coordinates": {
+            "latitude": 13.689414,
+            "longitude": 100.661014
+        },
+        "image_url": "https://raw.githubusercontent.com/Pihcet/SL-MAP/56e79c43c3f38c4f1b7f138023b726f245c138c1/%E0%B9%80%E0%B8%A1%E0%B9%88%E0%B8%B2%E0%B9%84%E0%B8%82%E0%B9%88%E0%B8%9B%E0%B8%A5%E0%B8%B2.jpg"
+    },
+    {
+        "name_th": "เสียวใหญ่",
+        "name_scientific": "<i>Phyllanthus angkorensis</i> Beille",
+        "family": "Phyllanthaceae",
+        "coordinates": {
+            "latitude": 13.689466,
+            "longitude": 100.660892
+        },
+        "image_url": "https://raw.githubusercontent.com/Pihcet/SL-MAP/56e79c43c3f38c4f1b7f138023b726f245c138c1/%E0%B9%80%E0%B8%AA%E0%B8%B5%E0%B8%A2%E0%B8%A7%E0%B9%83%E0%B8%AB%E0%B8%8D%E0%B9%88.jpg"
+    },
+    {
+        "name_th": "องุ่นทะเลดอกแดง",
+        "name_scientific": "<i>Coccoloba rugosa</i> Desf.",
+        "family": "Polygonaceae",
+        "coordinates": {
+            "latitude": 13.690145,
+            "longitude": 100.661074
+        },
+        "image_url": "https://raw.githubusercontent.com/Pihcet/SL-MAP/56e79c43c3f38c4f1b7f138023b726f245c138c1/%E0%B8%AD%E0%B8%87%E0%B8%B8%E0%B9%88%E0%B8%99%E0%B8%97%E0%B8%B0%E0%B9%80%E0%B8%A5%E0%B8%94%E0%B8%AD%E0%B8%81%E0%B9%81%E0%B8%94%E0%B8%87.jpg"
+    },
+    {
+        "name_th": "โกงกางใบเล็ก",
+        "name_scientific": "<i>Rhizophora apiculata</i> Blume",
+        "family": "Rhizophoraceae",
+        "coordinates": {
+            "latitude": 13.685155,
+            "longitude": 100.663064
+        },
+        "image_url": "https://raw.githubusercontent.com/Pihcet/SL-MAP/56e79c43c3f38c4f1b7f138023b726f245c138c1/%E0%B9%82%E0%B8%81%E0%B8%87%E0%B8%81%E0%B8%B2%E0%B8%87%E0%B9%83%E0%B8%9A%E0%B9%80%E0%B8%A5%E0%B9%87%E0%B8%81.jpg"
+    },
+    {
+        "name_th": "กระทุ่มนา",
+        "name_scientific": "<i>Mitragyna diversifolia</i> (Wall. ex G.Don) Havil.",
+        "family": "Rubiaceae",
+        "coordinates": {
+            "latitude": 13.685512,
+            "longitude": 100.663636
+        },
+        "image_url": "https://raw.githubusercontent.com/Pihcet/SL-MAP/56e79c43c3f38c4f1b7f138023b726f245c138c1/%E0%B8%81%E0%B8%A3%E0%B8%B0%E0%B8%97%E0%B8%B8%E0%B9%88%E0%B8%A1%E0%B8%99%E0%B8%B2.jpg"
+    },
+    {
+        "name_th": "เข็มพวงขาว",
+        "name_scientific": "<i>Ixora finlaysoniana</i> Wall. ex G.Don",
+        "family": "Rubiaceae",
+        "coordinates": {
+            "latitude": 13.690353,
+            "longitude": 100.661241
+        },
+        "image_url": "https://raw.githubusercontent.com/Pihcet/SL-MAP/56e79c43c3f38c4f1b7f138023b726f245c138c1/%E0%B9%80%E0%B8%82%E0%B9%87%E0%B8%A1%E0%B8%9B%E0%B9%88%E0%B8%B2.jpg"
+    },
+    {
+        "name_th": "ไม้หอมอินเดีย",
+        "name_scientific": "<i>Santalum album</i> L.",
+        "family": "Santalaceae",
+        "coordinates": {
+            "latitude": 13.689897,
+            "longitude": 100.661657
+        },
+        "image_url": "https://raw.githubusercontent.com/Pihcet/SL-MAP/56e79c43c3f38c4f1b7f138023b726f245c138c1/%E0%B9%84%E0%B8%A1%E0%B9%89%E0%B8%AB%E0%B8%AD%E0%B8%A1%E0%B8%AD%E0%B8%B4%E0%B8%99%E0%B9%80%E0%B8%94%E0%B8%B5%E0%B8%A2.jpg"
+    },
+    {
+        "name_th": "ขิงเจ้าเมืองเชียงใหม่",
+        "name_scientific": "<i>Zingiber niveum</i> Mood & Theilade",
+        "family": "Zingiberaceae",
+        "coordinates": {
+            "latitude": 13.689733,
+            "longitude": 100.662937
+        },
+        "image_url": "https://raw.githubusercontent.com/Pihcet/SL-MAP/56e79c43c3f38c4f1b7f138023b726f245c138c1/%E0%B8%82%E0%B8%B4%E0%B8%87%E0%B9%80%E0%B8%88%E0%B9%89%E0%B8%B2%E0%B9%80%E0%B8%A1%E0%B8%B7%E0%B8%AD%E0%B8%87%E0%B9%80%E0%B8%8A%E0%B8%B5%E0%B8%A2%E0%B8%87%E0%B9%83%E0%B8%AB%E0%B8%A1%E0%B9%88.jpg"
+    }
         ];
-
-        var birds = [
-            { name: 'กะรางหัวขวาน', location: [13.686256, 100.660496], image: 'https://raw.githubusercontent.com/Pihcet/SL-MAP/main/%E0%B8%81%E0%B8%B0%E0%B8%A3%E0%B8%B2%E0%B8%87%E0%B8%AB%E0%B8%B1%E0%B8%A7%E0%B8%82%E0%B8%A7%E0%B8%B2%E0%B8%99.JPG' },
-            { name: 'กาเหว่า', location: [13.688186, 100.658935], image: 'https://github.com/Pihcet/SL-MAP/blob/main/%E0%B8%81%E0%B8%B2%E0%B9%80%E0%B8%AB%E0%B8%A7%E0%B9%88%E0%B8%B2.JPG?raw=true' },
-            { name: 'กิ้งโครงคอดำ', location: [13.689510, 100.663461], image: 'https://raw.githubusercontent.com/Pihcet/SL-MAP/main/%E0%B8%81%E0%B8%B4%E0%B9%89%E0%B8%87%E0%B9%82%E0%B8%84%E0%B8%A3%E0%B8%87%E0%B8%84%E0%B8%AD%E0%B8%94%E0%B8%B3.JPG' },
-            { name: 'กินปลีอกเหลือง', location: [13.689391, 100.661742], image: 'https://raw.githubusercontent.com/Pihcet/SL-MAP/main/%E0%B8%81%E0%B8%B4%E0%B8%99%E0%B8%9B%E0%B8%A5%E0%B8%B5%E0%B8%AD%E0%B8%81%E0%B9%80%E0%B8%AB%E0%B8%A5%E0%B8%B7%E0%B8%AD%E0%B8%87.JPG' },
-            { name: 'แซงแซวหางปลา', location: [13.688827, 100.659391], image: 'https://raw.githubusercontent.com/Pihcet/SL-MAP/main/%E0%B9%81%E0%B8%8B%E0%B8%87%E0%B9%81%E0%B8%8B%E0%B8%A7%E0%B8%AB%E0%B8%B2%E0%B8%87%E0%B8%9B%E0%B8%A5%E0%B8%B2.jpg' },
-            { name: 'ต้อยตีวิด', location: [13.681635, 100.660939], image: 'https://raw.githubusercontent.com/Pihcet/SL-MAP/main/%E0%B8%95%E0%B9%89%E0%B8%AD%E0%B8%A2%E0%B8%95%E0%B8%B5%E0%B8%A7%E0%B8%B4%E0%B8%94.JPG' },
-            { name: 'ตะขาบทุ่ง', location: [13.688166, 100.659192], image: 'https://raw.githubusercontent.com/Pihcet/SL-MAP/main/%E0%B8%95%E0%B8%B0%E0%B8%82%E0%B8%B2%E0%B8%9A%E0%B8%97%E0%B8%B8%E0%B9%88%E0%B8%87.jpg' },
-            { name: 'พญาไฟเล็ก', location: [13.689571, 100.661398], image: 'https://raw.githubusercontent.com/Pihcet/SL-MAP/main/%E0%B8%9E%E0%B8%8D%E0%B8%B2%E0%B9%84%E0%B8%9F%E0%B9%80%E0%B8%A5%E0%B9%87%E0%B8%81.JPG' }
-        ];
-
-        var flowerMarkers = [];
-        var birdMarkers = [];
 
         flowers.forEach(function(flower) {
-            var marker = L.marker(flower.location, { icon: greenIcon });
-            var popupContent = '<b>' + flower.name + '</b><br><img src="' + flower.image + '" alt="' + flower.name + '" style="width:200px;height:auto;">';
-            marker.bindPopup(popupContent);
-            flowerMarkers.push(marker);
-            marker.addTo(map);
+            L.marker([flower.coordinates.latitude, flower.coordinates.longitude], { icon: greenIcon })
+                .bindPopup('<b>' + flower.name_th + '</b><br>' + flower.name_scientific + '<br>' + flower.family + '<br><img src="' + flower.image_url + '" alt="' + flower.name_th + '" style="width:200px;height:auto;">')
+                .addTo(map);
         });
-
-        birds.forEach(function(bird) {
-            var marker = L.marker(bird.location, { icon: blueIcon });
-            var popupContent = '<b>' + bird.name + '</b><br><img src="' + bird.image + '" alt="' + bird.name + '" style="width:200px;height:auto;">';
-            marker.bindPopup(popupContent);
-            birdMarkers.push(marker);
-            marker.addTo(map);
-        });
-
-        function toggleMarkers(markers) {
-            markers.forEach(function(marker) {
-                if (map.hasLayer(marker)) {
-                    map.removeLayer(marker);
-                } else {
-                    map.addLayer(marker);
-                }
-            });
-        }
-
-        function toggleFlowers() {
-            toggleMarkers(flowerMarkers);
-        }
-
-        function toggleBirds() {
-            toggleMarkers(birdMarkers);
-        }
-
-        var userMarker;
-        var userCircle;
-
-        function onLocationFound(e) {
-            var radius = e.accuracy;
-
-            if (userMarker) {
-                map.removeLayer(userMarker);
-                map.removeLayer(userCircle);
-            }
-
-            userMarker = L.marker(e.latlng, { icon: redIcon }).addTo(map)
-                .bindPopup("You are within " + radius + " meters from this point").openPopup();
-            userCircle = L.circle(e.latlng, radius).addTo(map);
-        }
-
-        function onLocationError(e) {
-            alert(e.message);
-        }
-
-        map.on('locationfound', onLocationFound);
-        map.on('locationerror', onLocationError);
-
-        function locateUser() {
-            map.locate({ setView: true, maxZoom: 16, watch: false });
-        }
-
-        locateUser();
     </script>
 </body>
 </html>
